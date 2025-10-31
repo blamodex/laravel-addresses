@@ -290,9 +290,12 @@ class AddressTest extends TestCase
         $address2->save();
 
         // Query using whereHasMorph
-        $user1Addresses = Address::whereHasMorph('addressable', DummyAddressUser::class, function ($query) use ($user1) {
-            $query->where('id', $user1->id);
-        })->get();
+        $user1Addresses = Address::whereHasMorph(
+            'addressable',
+            DummyAddressUser::class, function ($query) use ($user1) {
+                $query->where('id', $user1->id);
+            }
+        )->get();
 
         $this->assertCount(1, $user1Addresses);
         $this->assertEquals($address1->id, $user1Addresses->first()->id);

@@ -216,12 +216,48 @@ class AddressServiceTest extends TestCase
         $user2 = DummyAddressUser::create(['name' => 'Grace', 'email' => 'grace@example.com']);
 
         // Create addresses for user1
-        $this->service->create($user1, ['address_1' => '111 First St', 'city' => 'City1', 'subnation' => 'CA', 'postal_code' => '90001', 'country' => 'USA']);
-        $this->service->create($user1, ['address_1' => '222 Second St', 'city' => 'City2', 'subnation' => 'CA', 'postal_code' => '90002', 'country' => 'USA']);
-        $this->service->create($user1, ['address_1' => '333 Third St', 'city' => 'City3', 'subnation' => 'CA', 'postal_code' => '90003', 'country' => 'USA']);
+        $this->service->create(
+            $user1,
+            [
+                'address_1' => '111 First St',
+                'city' => 'City1',
+                'subnation' => 'CA',
+                'postal_code' => '90001',
+                'country' => 'USA'
+            ]
+        );
+        $this->service->create(
+            $user1,
+            [
+                'address_1' => '222 Second St',
+                'city' => 'City2',
+                'subnation' => 'CA',
+                'postal_code' => '90002',
+                'country' => 'USA'
+            ]
+        );
+        $this->service->create(
+            $user1,
+            [
+                'address_1' => '333 Third St',
+                'city' => 'City3',
+                'subnation' => 'CA',
+                'postal_code' => '90003',
+                'country' => 'USA'
+            ]
+        );
 
         // Create address for user2
-        $this->service->create($user2, ['address_1' => '444 Fourth St', 'city' => 'City4', 'subnation' => 'NY', 'postal_code' => '10001', 'country' => 'USA']);
+        $this->service->create(
+            $user2,
+            [
+                'address_1' => '444 Fourth St',
+                'city' => 'City4',
+                'subnation' => 'NY',
+                'postal_code' => '10001',
+                'country' => 'USA'
+            ]
+        );
 
         $user1Addresses = $this->service->listByAddressable($user1);
         $user2Addresses = $this->service->listByAddressable($user2);
@@ -258,8 +294,23 @@ class AddressServiceTest extends TestCase
     {
         $user = DummyAddressUser::create(['name' => 'Ivy', 'email' => 'ivy@example.com']);
 
-        $address1 = $this->service->create($user, ['address_1' => '555 Active St', 'city' => 'ActiveCity', 'subnation' => 'FL', 'postal_code' => '33101', 'country' => 'USA']);
-        $address2 = $this->service->create($user, ['address_1' => '666 Deleted St', 'city' => 'DeletedCity', 'subnation' => 'FL', 'postal_code' => '33102', 'country' => 'USA']);
+        $address1 = $this->service->create(
+            $user,
+            [
+                'address_1' => '555 Active St',
+                'city' => 'ActiveCity',
+                'subnation' => 'FL',
+                'postal_code' => '33101',
+                'country' => 'USA'
+            ]
+        );
+        $address2 = $this->service->create($user, [
+            'address_1' => '666 Deleted St',
+            'city' => 'DeletedCity',
+            'subnation' => 'FL',
+            'postal_code' => '33102',
+            'country' => 'USA'
+        ]);
 
         // Delete one address
         $this->service->delete($address2);

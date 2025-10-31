@@ -16,10 +16,11 @@ class AddressService
      * Create a new address
      *
      * @param AddressableInterface $addressable
-     * @param array $attributes
+     * @param array<mixed> $attributes
      * @return Address
      */
-    public function create(AddressableInterface $addressable, array $attributes): Address {
+    public function create(AddressableInterface $addressable, array $attributes): Address
+    {
         $address = new Address();
         $address->fill($attributes);
         $address->addressable_id = $addressable->getKey();
@@ -33,10 +34,11 @@ class AddressService
      * Update an existing address
      *
      * @param Address $address
-     * @param array $attributes
+     * @param array<mixed> $attributes
      * @return Address
      */
-    public function update(Address $address, array $attributes): Address {
+    public function update(Address $address, array $attributes): Address
+    {
         $address->fill($attributes);
         $address->save();
 
@@ -49,7 +51,8 @@ class AddressService
      * @param Address $address
      * @return bool
      */
-    public function delete(Address $address): bool {
+    public function delete(Address $address): bool
+    {
         return $address->delete();
     }
 
@@ -58,7 +61,7 @@ class AddressService
      *
      * @param AddressableInterface $addressable
      * @return \Illuminate\Database\Eloquent\Collection<int, Address>
-     * @phpstan-return \Illuminate\Database\Eloquent\Collection<\Blamodex\Address\Models\Address>
+     * @phpstan-return \Illuminate\Database\Eloquent\Collection<int, \Blamodex\Address\Models\Address>
      */
     public function listByAddressable(AddressableInterface $addressable): Collection
     {
