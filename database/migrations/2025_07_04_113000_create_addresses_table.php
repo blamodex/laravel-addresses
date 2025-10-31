@@ -14,11 +14,12 @@ return new class extends Migration
     {
         Schema::create('addresses', function (Blueprint $table) {
             $table->id();
-            $table->string('address_1');
+            $table->uuid('uuid')->unique();
+            $table->string('address_1')->nullable();
             $table->string('address_2')->nullable();
-            $table->string('city');
-            $table->string('subnation');
-            $table->string('postal_code');
+            $table->string('city')->nullable();
+            $table->string('subnation')->nullable();
+            $table->string('postal_code')->nullable();
             $table->string('country');
 
             // Polymorphic relationship

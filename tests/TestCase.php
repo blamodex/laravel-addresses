@@ -30,8 +30,24 @@ abstract class TestCase extends OrchestraTestCase
     {
         parent::setUp();
 
+        // Run addresses migration
         $migration = require __DIR__ . '/../database/migrations/2025_07_04_113000_create_addresses_table.php';
         $migration->up();
+
+        // Create test tables for fixtures
+        Schema::create('dummy_address_users', function ($table) {
+            $table->id();
+            $table->string('name');
+            $table->string('email');
+            $table->timestamps();
+        });
+
+        Schema::create('dummy_address_companies', function ($table) {
+            $table->id();
+            $table->string('name');
+            $table->string('industry')->nullable();
+            $table->timestamps();
+        });
     }
 
     protected function tearDown(): void

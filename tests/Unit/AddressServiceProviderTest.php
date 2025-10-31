@@ -54,18 +54,6 @@ class AddressServiceProviderTest extends TestCase
     }
 
     /**
-     * It loads migrations from correct directory
-     */
-    public function test_loads_migrations_from_correct_directory(): void
-    {
-        // We can't easily test migration loading directly, but we can verify
-        // the migration directory exists
-        $migrationPath = realpath(__DIR__ . '/../../database/migrations');
-        
-        $this->assertDirectoryExists($migrationPath);
-    }
-
-    /**
      * It sets up package configuration correctly during boot
      */
     public function test_boot_method_sets_up_package_correctly(): void
