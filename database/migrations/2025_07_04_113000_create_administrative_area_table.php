@@ -12,18 +12,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('addresses', function (Blueprint $table) {
+        Schema::create('administrative_areas', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
-            $table->string('address_1')->nullable();
-            $table->string('address_2')->nullable();
-            $table->string('city')->nullable();
-            $table->foreignId('administrative_area_id')->nullable()->constrained('administrative_areas');
-            $table->string('postal_code')->nullable();
-            $table->foreignId('country_id')->nullable()->constrained('countries');
-
-            // Polymorphic relationship
-            $table->morphs('addressable');
+            $table->foreignId('country_id')->index();
+            $table->string('administrative_area');
+            $table->string('administrative_area_code');
 
             // Standard timestamps + soft deletes
             $table->timestamps();
@@ -36,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('addresses');
+        Schema::dropIfExists('subnations');
     }
 };
