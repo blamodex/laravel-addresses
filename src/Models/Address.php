@@ -35,14 +35,15 @@ class Address extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'uuid',
         'address_1',
         'address_2',
         'city',
-        'subnation',
+        'subnation_id',
         'postal_code',
-        'country',
+        'country_id',
         'addressable_id',
-        'addressable_type',
+        'addressable_type'
     ];
 
     /**
