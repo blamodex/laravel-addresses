@@ -21,6 +21,8 @@ use Illuminate\Support\Str;
  * @property string $subnation
  * @property string $postal_code
  * @property string $country
+ * @property int $administrative_area_id
+ * @property int $country_id
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -39,7 +41,7 @@ class Address extends Model
         'address_1',
         'address_2',
         'city',
-        'subnation_id',
+        'administrative_area_id',
         'postal_code',
         'country_id',
         'addressable_id',
@@ -72,6 +74,26 @@ class Address extends Model
         /** @var MorphTo<\Illuminate\Database\Eloquent\Model&\Blamodex\Address\Contracts\AddressableInterface, $this> $relation */
         $relation = $this->morphTo('addressable');
 
+        return $relation;
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Country, Address>
+     */
+    public function country(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        /** @var \Illuminate\Database\Eloquent\Relations\BelongsTo<Country, Address> $relation */
+        $relation = $this->belongsTo(Country::class, 'country_id');
+        return $relation;
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<AdministrativeArea, Address>
+     */
+    public function administrativeArea(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        /** @var \Illuminate\Database\Eloquent\Relations\BelongsTo<AdministrativeArea, Address> $relation */
+        $relation = $this->belongsTo(AdministrativeArea::class, 'administrative_area_id');
         return $relation;
     }
 }

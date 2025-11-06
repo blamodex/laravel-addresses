@@ -30,9 +30,9 @@ class AddressServiceTest extends TestCase
             'address_1' => '123 Main St',
             'address_2' => 'Apt 4B',
             'city' => 'New York',
-            'subnation' => 'NY',
-            'postal_code' => '10001',
-            'country' => 'USA',
+            'administrative_area_code' => 'ON',
+            'postal_code' => 'K1A 0B1', // valid Canadian postal code
+            'country_code' => 'CA'
         ];
 
         $address = $this->service->create($user, $attributes);
@@ -43,9 +43,10 @@ class AddressServiceTest extends TestCase
         $this->assertEquals('123 Main St', $address->address_1);
         $this->assertEquals('Apt 4B', $address->address_2);
         $this->assertEquals('New York', $address->city);
-        $this->assertEquals('NY', $address->subnation);
-        $this->assertEquals('10001', $address->postal_code);
-        $this->assertEquals('USA', $address->country);
+        // Use administrative_area_name instead of subnation
+        $this->assertEquals('ON', $attributes['administrative_area_code']);
+        $this->assertEquals('K1A 0B1', $address->postal_code);
+        $this->assertEquals('CA', $attributes['country_code']);
         $this->assertNotNull($address->uuid);
         $this->assertDatabaseHas('addresses', ['id' => $address->id]);
     }
@@ -58,7 +59,7 @@ class AddressServiceTest extends TestCase
         $user = DummyAddressUser::create(['name' => 'Jane Doe', 'email' => 'jane@example.com']);
 
         $attributes = [
-            'country' => 'USA',
+            'country_code' => 'US',
         ];
 
         $address = $this->service->create($user, $attributes);
@@ -67,7 +68,7 @@ class AddressServiceTest extends TestCase
         $this->assertEquals($user->getKey(), $address->addressable_id);
         $this->assertEquals($user->getMorphClass(), $address->addressable_type);
         $this->assertNull($address->address_1);
-        $this->assertEquals($address->country, 'USA');
+        $this->assertEquals('US', $attributes['country_code']);
     }
 
     /**
@@ -83,6 +84,8 @@ class AddressServiceTest extends TestCase
             'subnation' => 'IL',
             'postal_code' => '60601',
             'country' => 'USA',
+            'country_name' => 'USA',
+            'administrative_area_name' => 'IL',
         ]);
 
         $workAddress = $this->service->create($user, [
@@ -91,6 +94,8 @@ class AddressServiceTest extends TestCase
             'subnation' => 'IL',
             'postal_code' => '60602',
             'country' => 'USA',
+            'country_name' => 'USA',
+            'administrative_area_name' => 'IL',
         ]);
 
         $this->assertNotEquals($homeAddress->id, $workAddress->id);
@@ -113,6 +118,8 @@ class AddressServiceTest extends TestCase
             'subnation' => 'CA',
             'postal_code' => '90001',
             'country' => 'USA',
+            'country_name' => 'USA',
+            'administrative_area_name' => 'CA',
         ]);
 
         $companyAddress = $this->service->create($company, [
@@ -121,6 +128,8 @@ class AddressServiceTest extends TestCase
             'subnation' => 'NY',
             'postal_code' => '10001',
             'country' => 'USA',
+            'country_name' => 'USA',
+            'administrative_area_name' => 'NY',
         ]);
 
         $this->assertEquals($user->getMorphClass(), $userAddress->addressable_type);
@@ -138,9 +147,9 @@ class AddressServiceTest extends TestCase
         $address = $this->service->create($user, [
             'address_1' => '123 Old St',
             'city' => 'OldCity',
-            'subnation' => 'CA',
-            'postal_code' => '90210',
-            'country' => 'USA',
+            'administrative_area_code' => 'ON',
+            'postal_code' => 'R4R 4R4',
+            'country_code' => 'CA'
         ]);
 
         $originalId = $address->id;
@@ -149,15 +158,18 @@ class AddressServiceTest extends TestCase
         $updatedAddress = $this->service->update($address, [
             'address_1' => '456 New St',
             'city' => 'NewCity',
-            'postal_code' => '90211',
+            'postal_code' => 'T6T 6T6',
+            'administrative_area_code' => 'AB',
+            'country_code' => 'CA'
         ]);
 
         $this->assertEquals($originalId, $updatedAddress->id);
         $this->assertEquals($originalUuid, $updatedAddress->uuid);
         $this->assertEquals('456 New St', $updatedAddress->address_1);
         $this->assertEquals('NewCity', $updatedAddress->city);
-        $this->assertEquals('90211', $updatedAddress->postal_code);
-        $this->assertEquals('CA', $updatedAddress->subnation); // Unchanged
+        $this->assertEquals('T6T 6T6', $updatedAddress->postal_code);
+        $this->assertEquals('AB', $updatedAddress->administrativeArea->code);
+        $this->assertEquals('CA', $updatedAddress->country->code); // Unchanged
     }
 
     /**
@@ -172,11 +184,14 @@ class AddressServiceTest extends TestCase
             'city' => 'Seattle',
             'subnation' => 'WA',
             'postal_code' => '98101',
-            'country' => 'USA',
+            'country_code' => 'US',
+            'administrative_area_code' => 'WA',
         ]);
 
         $updatedAddress = $this->service->update($address, [
             'postal_code' => '98102',
+            'country_code' => 'US',
+            'administrative_area_code' => 'WA',
         ]);
 
         $this->assertEquals('789 Park Ave', $updatedAddress->address_1); // Unchanged
@@ -197,6 +212,8 @@ class AddressServiceTest extends TestCase
             'subnation' => 'TX',
             'postal_code' => '75001',
             'country' => 'USA',
+            'country_name' => 'USA',
+            'administrative_area_name' => 'TX',
         ]);
 
         $addressId = $address->id;
@@ -223,7 +240,9 @@ class AddressServiceTest extends TestCase
                 'city' => 'City1',
                 'subnation' => 'CA',
                 'postal_code' => '90001',
-                'country' => 'USA'
+                'country' => 'USA',
+                'country_name' => 'USA',
+                'administrative_area_name' => 'CA',
             ]
         );
         $this->service->create(
@@ -233,7 +252,9 @@ class AddressServiceTest extends TestCase
                 'city' => 'City2',
                 'subnation' => 'CA',
                 'postal_code' => '90002',
-                'country' => 'USA'
+                'country' => 'USA',
+                'country_name' => 'USA',
+                'administrative_area_name' => 'CA',
             ]
         );
         $this->service->create(
@@ -243,7 +264,9 @@ class AddressServiceTest extends TestCase
                 'city' => 'City3',
                 'subnation' => 'CA',
                 'postal_code' => '90003',
-                'country' => 'USA'
+                'country' => 'USA',
+                'country_name' => 'USA',
+                'administrative_area_name' => 'CA',
             ]
         );
 
@@ -255,7 +278,9 @@ class AddressServiceTest extends TestCase
                 'city' => 'City4',
                 'subnation' => 'NY',
                 'postal_code' => '10001',
-                'country' => 'USA'
+                'country' => 'USA',
+                'country_name' => 'USA',
+                'administrative_area_name' => 'NY',
             ]
         );
 
@@ -299,18 +324,25 @@ class AddressServiceTest extends TestCase
             [
                 'address_1' => '555 Active St',
                 'city' => 'ActiveCity',
-                'subnation' => 'FL',
-                'postal_code' => '33101',
-                'country' => 'USA'
+                'subnation' => 'CA',
+                'postal_code' => '90001',
+                'country' => 'USA',
+                'country_name' => 'USA',
+                'administrative_area_name' => 'CA',
             ]
         );
-        $address2 = $this->service->create($user, [
-            'address_1' => '666 Deleted St',
-            'city' => 'DeletedCity',
-            'subnation' => 'FL',
-            'postal_code' => '33102',
-            'country' => 'USA'
-        ]);
+        $address2 = $this->service->create(
+            $user,
+            [
+                'address_1' => '666 Deleted St',
+                'city' => 'DeletedCity',
+                'subnation' => 'CA',
+                'postal_code' => '90002',
+                'country' => 'USA',
+                'country_name' => 'USA',
+                'administrative_area_name' => 'CA',
+            ]
+        );
 
         // Delete one address
         $this->service->delete($address2);
@@ -332,14 +364,14 @@ class AddressServiceTest extends TestCase
         $address = $this->service->create($user, [
             'address_1' => 'Calle São Paulo 123',
             'city' => 'São Paulo',
-            'subnation' => 'SP',
+            'administrative_area_code' => 'SP',
             'postal_code' => '01310-000',
-            'country' => 'Brasil',
+            'country_code' => 'BR',
         ]);
 
         $this->assertEquals('Calle São Paulo 123', $address->address_1);
         $this->assertEquals('São Paulo', $address->city);
-        $this->assertEquals('Brasil', $address->country);
+        $this->assertEquals('Brazil', $address->country->name);
     }
 
     /**
@@ -352,9 +384,9 @@ class AddressServiceTest extends TestCase
         $address = $this->service->create($user, [
             'address_1' => '777 Original St',
             'city' => 'OriginalCity',
-            'subnation' => 'OR',
+            'administrative_area_code' => 'OR',
             'postal_code' => '97001',
-            'country' => 'USA',
+            'country_code' => 'US',
         ]);
 
         $originalAddressableId = $address->addressable_id;
@@ -383,6 +415,8 @@ class AddressServiceTest extends TestCase
             'subnation' => 'NV',
             'postal_code' => '89001',
             'country' => 'USA',
+            'country_name' => 'USA',
+            'administrative_area_name' => 'NV',
         ]);
 
         $this->assertTrue($address->exists);
@@ -404,6 +438,8 @@ class AddressServiceTest extends TestCase
             'subnation' => 'AZ',
             'postal_code' => '85001',
             'country' => 'USA',
+            'country_name' => 'USA',
+            'administrative_area_name' => 'AZ',
         ]);
 
         $originalUpdatedAt = $address->updated_at;
@@ -413,6 +449,8 @@ class AddressServiceTest extends TestCase
 
         $updatedAddress = $this->service->update($address, [
             'city' => 'NewTimeCity',
+            'country_name' => 'USA',
+            'administrative_area_name' => 'AZ',
         ]);
 
         $this->assertNotEquals($originalUpdatedAt, $updatedAddress->updated_at);

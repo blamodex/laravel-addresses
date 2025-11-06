@@ -4,7 +4,10 @@ namespace Blamodex\Address\Services;
 
 use Blamodex\Address\Contracts\AddressableInterface;
 use Blamodex\Address\Models\Address;
+use Blamodex\Address\Models\AdministrativeArea;
+use Blamodex\Address\Models\Country;
 use Illuminate\Database\Eloquent\Collection;
+use Blamodex\Address\Utils\PostalCodeFormatter;
 
 /**
  * Service responsible for managing Addresses
@@ -17,14 +20,54 @@ class AddressService
      *
      * @param AddressableInterface $addressable
      * @param array<mixed> $attributes
-     * @return Address
+     * @return Address|false
      */
-    public function create(AddressableInterface $addressable, array $attributes): Address
+    public function create(AddressableInterface $addressable, array $attributes): Address|false
     {
+        $country = null;
+
+        if (!empty($attributes['country_name'])) {
+            $country = Country::where('name', $attributes['country_name'])->first();
+        }
+
+        if (!empty($attributes['country_code'])) {
+            $country = Country::where('code', $attributes['country_code'])->first();
+        }
+
+        if (!empty($attributes['administrative_area_name'])) {
+            $administrativeArea = AdministrativeArea::where('name', $attributes['administrative_area_name'])->first();
+        }
+
+        if (!empty($attributes['administrative_area_code'])) {
+            $administrativeArea = AdministrativeArea::where('code', $attributes['administrative_area_code'])->first();
+        }
+
+        if (isset($country) && isset($administrativeArea)) {
+            if ($administrativeArea->country_id !== $country->id) {
+                // Mismatch between country and administrative area
+                return false;
+            }
+        }
+
+        $countryCode = $country ? $country->code : 'CA';
+
+        if (isset($attributes['postal_code'])) {
+            $postalCode = PostalCodeFormatter::format($attributes['postal_code'], $countryCode);
+        }
+
         $address = new Address();
-        $address->fill($attributes);
         $address->addressable_id = $addressable->getKey();
         $address->addressable_type = $addressable->getMorphClass();
+        $address->address_1 = $attributes['address_1'] ?? null;
+        $address->address_2 = $attributes['address_2'] ?? null;
+        $address->city = $attributes['city'] ?? null;
+        if (isset($administrativeArea)) {
+            $address->administrative_area_id = $administrativeArea->id;
+        }
+        if (isset($country)) {
+            $address->country_id = $country->id;
+        }
+        $address->postal_code = $postalCode ?? null;
         $address->save();
 
         return $address;
@@ -39,7 +82,48 @@ class AddressService
      */
     public function update(Address $address, array $attributes): Address
     {
-        $address->fill($attributes);
+        $country = null;
+        $administrativeArea = null;
+        $postalCode = null;
+
+        if (!empty($attributes['country_name'])) {
+            $country = Country::where('name', $attributes['country_name'])->first();
+        }
+
+        if (!empty($attributes['country_code'])) {
+            $country = Country::where('code', $attributes['country_code'])->first();
+        }
+
+        if (!empty($attributes['administrative_area_name'])) {
+            $administrativeArea = AdministrativeArea::where('name', $attributes['administrative_area_name'])->first();
+        }
+
+        if (!empty($attributes['administrative_area_code'])) {
+            $administrativeArea = AdministrativeArea::where('code', $attributes['administrative_area_code'])->first();
+        }
+
+        if ($country && $administrativeArea) {
+            if ($administrativeArea->country_id !== $country->id) {
+                throw new \InvalidArgumentException('Mismatch between country and administrative area');
+            }
+        }
+
+        $countryCode = $country ? $country->code : null;
+
+        if (!empty($attributes['postal_code'])) {
+            $postalCode = PostalCodeFormatter::format($attributes['postal_code'], $countryCode);
+        }
+
+        $address->address_1 = $attributes['address_1'] ?? $address->address_1;
+        $address->address_2 = $attributes['address_2'] ?? $address->address_2;
+        $address->city = $attributes['city'] ?? $address->city;
+        if ($administrativeArea) {
+            $address->administrative_area_id = $administrativeArea->id;
+        }
+        if ($country) {
+            $address->country_id = $country->id;
+        }
+        $address->postal_code = $postalCode ?? $address->postal_code;
         $address->save();
 
         return $address;

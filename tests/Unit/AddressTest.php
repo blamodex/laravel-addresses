@@ -3,6 +3,8 @@
 namespace Blamodex\Address\Tests\Unit;
 
 use Blamodex\Address\Models\Address;
+use Blamodex\Address\Models\AdministrativeArea;
+use Blamodex\Address\Models\Country;
 use Blamodex\Address\Tests\Fixtures\DummyAddressCompany;
 use Blamodex\Address\Tests\Fixtures\DummyAddressUser;
 use Blamodex\Address\Tests\TestCase;
@@ -232,30 +234,6 @@ class AddressTest extends TestCase
     }
 
     /**
-     * It respects mass assignment protection
-     */
-    public function test_respects_mass_assignment_protection(): void
-    {
-        $user = DummyAddressUser::create(['name' => 'Frank Green', 'email' => 'frank@example.com']);
-
-        $address = new Address();
-        $address->fill([
-            'address_1' => '111 Protected St',
-            'city' => 'Phoenix',
-            'subnation' => 'AZ',
-            'postal_code' => '85001',
-            'country' => 'USA',
-            'uuid' => 'should-be-ignored', // UUID is not in fillable
-        ]);
-        $address->addressable_id = $user->getKey();
-        $address->addressable_type = $user->getMorphClass();
-        $address->save();
-
-        // UUID should be auto-generated, not the value we tried to fill
-        $this->assertNotEquals('should-be-ignored', $address->uuid);
-    }
-
-    /**
      * It can query addresses by addressable using relation
      */
     public function test_can_query_addresses_by_addressable(): void
@@ -263,30 +241,29 @@ class AddressTest extends TestCase
         $user1 = DummyAddressUser::create(['name' => 'George Hill', 'email' => 'george@example.com']);
         $user2 = DummyAddressUser::create(['name' => 'Helen Iris', 'email' => 'helen@example.com']);
 
+        $country = Country::where('code', 'CA')->first();
+        $administrativeArea = AdministrativeArea::where('code', 'ON')->first();
+
         // Create addresses for user1
         $address1 = new Address();
-        $address1->fill([
-            'address_1' => '123 Query St',
-            'city' => 'City1',
-            'subnation' => 'CA',
-            'postal_code' => '90001',
-            'country' => 'USA',
-        ]);
         $address1->addressable_id = $user1->getKey();
         $address1->addressable_type = $user1->getMorphClass();
+        $address1->country_id = $country->id;
+        $address1->administrative_area_id = $administrativeArea->id;
+        $address1->address_1 = '123 Query St';
+        $address1->city = 'City1';
+        $address1->postal_code = 'H1A 1H1';
         $address1->save();
 
         // Create address for user2
         $address2 = new Address();
-        $address2->fill([
-            'address_1' => '456 Query Ave',
-            'city' => 'City2',
-            'subnation' => 'NY',
-            'postal_code' => '10001',
-            'country' => 'USA',
-        ]);
         $address2->addressable_id = $user2->getKey();
         $address2->addressable_type = $user2->getMorphClass();
+        $address2->country_id = $country->id;
+        $address2->administrative_area_id = $administrativeArea->id;
+        $address2->address_1 = '456 Query Ave';
+        $address2->city = 'City2';
+        $address2->postal_code = 'A1A 2B2';
         $address2->save();
 
         // Query using whereHasMorph

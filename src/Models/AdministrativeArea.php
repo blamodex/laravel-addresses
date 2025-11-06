@@ -12,8 +12,8 @@ use Illuminate\Support\Str;
  * @property int $id
  * @property string $uuid
  * @property int $country_id
- * @property string $administrative_area
- * @property string $administrative_area_code
+ * @property string $name
+ * @property string $code
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
@@ -27,8 +27,8 @@ class AdministrativeArea extends Model
     protected $fillable = [
         'uuid',
         'country_id',
-        'administrative_area',
-        'administrative_area_code',
+        'name',
+        'code',
     ];
 
     protected static function booted()
@@ -43,15 +43,22 @@ class AdministrativeArea extends Model
     /**
      * Get the country for this administrative area.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Country, AdministrativeArea>
      */
-    public function country()
+    public function country(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(Country::class, 'country_id');
+        /** @var \Illuminate\Database\Eloquent\Relations\BelongsTo<Country, AdministrativeArea> $relation */
+        $relation = $this->belongsTo(Country::class, 'country_id');
+        return $relation;
     }
 
-    public function addresses()
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<Address, AdministrativeArea>
+     */
+    public function addresses(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(Address::class, 'administrative_area_id');
+        /** @var \Illuminate\Database\Eloquent\Relations\HasMany<Address, AdministrativeArea> $relation */
+        $relation = $this->hasMany(Address::class, 'administrative_area_id');
+        return $relation;
     }
 }
