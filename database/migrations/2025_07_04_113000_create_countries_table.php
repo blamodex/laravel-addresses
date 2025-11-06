@@ -15,8 +15,8 @@ return new class extends Migration
         Schema::create('countries', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
-            $table->string('country');
-            $table->string('country_code');
+            $table->string('name');
+            $table->string('code');
 
             // Standard timestamps + soft deletes
             $table->timestamps();

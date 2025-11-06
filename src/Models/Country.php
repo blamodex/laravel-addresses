@@ -11,8 +11,8 @@ use Illuminate\Support\Str;
  *
  * @property int $id
  * @property string $uuid
- * @property string $country
- * @property string $country_code
+ * @property string $name
+ * @property string $code
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
@@ -25,8 +25,8 @@ class Country extends Model
     protected $table = 'countries';
     protected $fillable = [
         'uuid',
-        'country',
-        'country_code',
+        'name',
+        'code',
     ];
 
     protected static function booted()
@@ -41,15 +41,22 @@ class Country extends Model
     /**
      * Get the administrative areas for the country.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<AdministrativeArea, Country>
      */
-    public function administrativeAreas()
+    public function administrativeAreas(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(AdministrativeArea::class, 'country_id');
+        /** @var \Illuminate\Database\Eloquent\Relations\HasMany<AdministrativeArea, Country> $relation */
+        $relation = $this->hasMany(AdministrativeArea::class, 'country_id');
+        return $relation;
     }
 
-    public function addresses()
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<Address, Country>
+     */
+    public function addresses(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(Address::class, 'country_id');
+        /** @var \Illuminate\Database\Eloquent\Relations\HasMany<Address, Country> $relation */
+        $relation = $this->hasMany(Address::class, 'country_id');
+        return $relation;
     }
 }

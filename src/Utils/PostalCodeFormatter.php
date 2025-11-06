@@ -2,17 +2,12 @@
 
 namespace Blamodex\Address\Utils;
 
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-
 class PostalCodeFormatter
 {
     public static function format(
         string $postalCode,
-        string $countryCode = 'CA'
-    ): string|false
-    {
+        string|null $countryCode = 'CA'
+    ): string|false {
         $postalCode = trim($postalCode);
 
         if ($countryCode === 'US') {

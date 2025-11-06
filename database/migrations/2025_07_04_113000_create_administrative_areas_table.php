@@ -16,8 +16,8 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
             $table->foreignId('country_id')->index();
-            $table->string('administrative_area');
-            $table->string('administrative_area_code');
+            $table->string('name');
+            $table->string('code');
 
             // Standard timestamps + soft deletes
             $table->timestamps();
