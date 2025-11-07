@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Blamodex\Address\Tests\Unit;
 
 use Blamodex\Address\Models\Address;
@@ -82,8 +84,8 @@ class AddressableTraitTest extends TestCase
 
         $result = $model->createAddress(['country_code' => 'US', 'postal_code' => 'BAD']);
 
-        // Current implementation persists an Address and stores the formatter result (false) on postal_code
+        // Current implementation persists an Address and stores the formatter result (null) on postal_code
         $this->assertInstanceOf(Address::class, $result);
-        $this->assertSame(false, $result->postal_code);
+        $this->assertNull($result->postal_code);
     }
 }

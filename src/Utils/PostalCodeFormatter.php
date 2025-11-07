@@ -1,13 +1,34 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Blamodex\Address\Utils;
 
 class PostalCodeFormatter
 {
-    public static function format(
-        string $postalCode,
-        string|null $countryCode = 'CA'
-    ): string|false {
+    /**
+     * Format a postal code for a given country.
+     *
+     * Public contract:
+     * - Accepts string|null for $postalCode and string|null for $countryCode.
+     * - If $postalCode is null or $countryCode is explicitly null, returns null.
+     * - On success returns a normalized string. On invalid/unsupported input returns null.
+     *
+     * @param string|null $postalCode
+     * @param string|null $countryCode
+     * @return string|null Normalized postal code or null when invalid/unsupported
+     */
+    public static function format(?string $postalCode, ?string $countryCode = 'CA'): ?string
+    {
+        if ($postalCode === null) {
+            return null;
+        }
+
+        // Explicit null country code means "no formatting/unknown"
+        if ($countryCode === null) {
+            return null;
+        }
+
         $postalCode = trim($postalCode);
 
         if ($countryCode === 'US') {
@@ -15,14 +36,17 @@ class PostalCodeFormatter
             if (preg_match('/^(\d{5})-(\d{4})$/', $postalCode, $matches)) {
                 return $matches[1] . '-' . $matches[2];
             }
-            // Normalize: remove spaces and dashes
+
+            // Normalize: remove non-digits
             $normalized = preg_replace('/[^\d]/', '', $postalCode);
+
             // ZIP+4: 123456789 (normalized)
-            if (preg_match('/^(\d{5})(\d{4})$/', $normalized, $matches)) {
+            if ($normalized !== null && preg_match('/^(\d{5})(\d{4})$/', $normalized, $matches)) {
                 return $matches[1] . '-' . $matches[2];
             }
+
             // 5-digit ZIP
-            if (preg_match('/^\d{5}$/', $normalized)) {
+            if ($normalized !== null && preg_match('/^\d{5}$/', $normalized)) {
                 return $normalized;
             }
         } elseif ($countryCode === 'CA') {
@@ -34,6 +58,6 @@ class PostalCodeFormatter
             }
         }
 
-        return false;
+        return null;
     }
 }
