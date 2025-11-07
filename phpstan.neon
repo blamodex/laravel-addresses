@@ -10,3 +10,8 @@ parameters:
     level: 6
 
     ignoreErrors:
+        -
+            # Match the trait unused message for Addressable. Keep the pattern short to avoid
+            # whitespace/line-wrapping mismatches in phpstan output.
+            message: '#Trait\s+Blamodex\\Address\\Traits\\Addressable#'
+            path: src/Traits/Addressable.php

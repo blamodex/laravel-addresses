@@ -455,4 +455,46 @@ class AddressServiceTest extends TestCase
 
         $this->assertNotEquals($originalUpdatedAt, $updatedAddress->updated_at);
     }
+
+    /**
+     * It throws when administrative area does not belong to the provided country on create
+     */
+    public function test_create_throws_when_administrative_area_not_in_country(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $user = DummyAddressUser::create(['name' => 'Mismatch', 'email' => 'mismatch@example.com']);
+
+        // administrative area 'ON' belongs to Canada, but country_code set to 'US'
+        $this->service->create($user, [
+            'address_1' => '1 Mismatch St',
+            'city' => 'Nowhere',
+            'administrative_area_code' => 'ON',
+            'country_code' => 'US',
+        ]);
+    }
+
+    /**
+     * It throws when administrative area does not belong to the provided country on update
+     */
+    public function test_update_throws_when_administrative_area_not_in_country(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $user = DummyAddressUser::create(['name' => 'UpdMismatch', 'email' => 'updmismatch@example.com']);
+
+        // First, create a valid address in Canada (ON)
+        $address = $this->service->create($user, [
+            'address_1' => '10 Valid Rd',
+            'city' => 'Toronto',
+            'administrative_area_code' => 'ON',
+            'country_code' => 'CA',
+        ]);
+
+        // Now attempt to update with a mismatched country (US) while keeping administrative_area_code 'ON'
+        $this->service->update($address, [
+            'administrative_area_code' => 'ON',
+            'country_code' => 'US',
+        ]);
+    }
 }
