@@ -6,29 +6,22 @@ use Blamodex\Address\Contracts\AddressableInterface;
 use Blamodex\Address\Models\Address;
 use Blamodex\Address\Services\AddressService;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 
+/**
+ * @mixin \Blamodex\Address\Contracts\AddressableInterface
+ */
 class Addressable
 {
-    /**
-     * Define the addresses relation for addressable models.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany<\Blamodex\Address\Models\Address, static>
-     */
-    public function addresses(): \Illuminate\Database\Eloquent\Relations\MorphMany
-    {
-        return $this->morphMany(Address::class, 'addressable');
-    }
-
     /**
      * Store a new address
      *
      * @param array<mixed> $attributes
      * @return Address|false
+     * @phpstan-this \Blamodex\Address\Contracts\AddressableInterface
      */
-    public function createAddress(array $attributes): Address|false
+    public function createAddress(array $attributes): \Blamodex\Address\Models\Address|false
     {
-        return app(AddressService::class)->create($this, $attributes);
+        return app(\Blamodex\Address\Services\AddressService::class)->create($this, $attributes);
     }
 
     /**
@@ -58,9 +51,10 @@ class Addressable
      * Return a list of addresses
      *
      * @return \Illuminate\Database\Eloquent\Collection<int, Address>
+     * @phpstan-this \Blamodex\Address\Contracts\AddressableInterface
      */
-    public function getAddresses(): Collection
+    public function getAddresses(): \Illuminate\Database\Eloquent\Collection
     {
-        return app(AddressService::class)->listByAddressable($this);
+        return app(\Blamodex\Address\Services\AddressService::class)->listByAddressable($this);
     }
 }
