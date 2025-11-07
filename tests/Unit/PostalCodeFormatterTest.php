@@ -56,4 +56,14 @@ class PostalCodeFormatterTest extends TestCase
         $this->assertSame('K1A 0B1', PostalCodeFormatter::format('K1A0B1'));
         $this->assertFalse(PostalCodeFormatter::format('123456'));
     }
+
+    public function test_null_or_unknown_country_returns_false()
+    {
+        // Explicit null should not default to CA (signature allows null)
+        $this->assertFalse(PostalCodeFormatter::format('K1A0B1', null));
+
+        // Unknown country codes should return false
+        $this->assertFalse(PostalCodeFormatter::format('12345', 'GB'));
+        $this->assertFalse(PostalCodeFormatter::format('K1A0B1', 'ZZ'));
+    }
 }

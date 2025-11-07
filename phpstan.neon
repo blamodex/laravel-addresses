@@ -10,3 +10,6 @@ parameters:
     level: 6
 
     ignoreErrors:
+        -
+            message: '#Trait\\s+Blamodex\\\\Address\\\\Traits\\\\Addressable\\s+is\\s+used\\s+zero\\s+times\\s+and\\s+is\\s+not\\s+analysed#'
+            path: src/Traits/Addressable.php

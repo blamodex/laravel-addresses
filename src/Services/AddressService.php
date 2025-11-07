@@ -45,7 +45,7 @@ class AddressService
         if (isset($country) && isset($administrativeArea)) {
             if ($administrativeArea->country_id !== $country->id) {
                 // Mismatch between country and administrative area
-                return false;
+                throw new \InvalidArgumentException('Mismatch between country and administrative area');
             }
         }
 

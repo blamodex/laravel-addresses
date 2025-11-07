@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Collection;
 /**
  * @mixin \Blamodex\Address\Contracts\AddressableInterface
  */
-class Addressable
+trait Addressable
 {
     /**
      * Store a new address
