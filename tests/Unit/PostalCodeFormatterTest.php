@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Blamodex\Address\Tests\Unit;
 
 use Blamodex\Address\Utils\PostalCodeFormatter;

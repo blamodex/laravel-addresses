@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Blamodex\Address\Services;
 
 use Blamodex\Address\Contracts\AddressableInterface;
@@ -20,9 +22,9 @@ class AddressService
      *
      * @param AddressableInterface $addressable
      * @param array<mixed> $attributes
-     * @return Address|false
+     * @return Address
      */
-    public function create(AddressableInterface $addressable, array $attributes): Address|false
+    public function create(AddressableInterface $addressable, array $attributes): Address
     {
         $country = null;
 
@@ -49,9 +51,9 @@ class AddressService
             }
         }
 
-        $countryCode = $country ? $country->code : 'CA';
+        $countryCode = $country ? $country->code : null;
 
-        if (isset($attributes['postal_code'])) {
+        if (!empty($attributes['postal_code'])) {
             $postalCode = PostalCodeFormatter::format($attributes['postal_code'], $countryCode);
         }
 
