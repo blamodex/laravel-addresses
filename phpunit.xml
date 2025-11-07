@@ -12,9 +12,4 @@
             <directory>src</directory>
         </include>
     </source>
-    <coverage>
-        <report>
-            <html outputDirectory="tests/reports"/>
-        </report>
-    </coverage>
 </phpunit>
