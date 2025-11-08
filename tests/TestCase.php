@@ -35,18 +35,24 @@ abstract class TestCase extends OrchestraTestCase
     {
         parent::setUp();
 
-        // Run the migrations
-        $migration = require __DIR__ .
-            '/../database/migrations/2025_07_04_113000_create_countries_table.php';
-        $migration->up();
+        // Run the migrations (use glob to tolerate timestamp variations)
+        $countriesMigration = glob(__DIR__ . '/../database/migrations/*_create_countries_table.php')[0] ?? null;
+        if ($countriesMigration) {
+            $migration = require $countriesMigration;
+            $migration->up();
+        }
 
-        $migration = require __DIR__ .
-            '/../database/migrations/2025_07_04_113000_create_administrative_areas_table.php';
-        $migration->up();
+        $adminMigration = glob(__DIR__ . '/../database/migrations/*_create_administrative_areas_table.php')[0] ?? null;
+        if ($adminMigration) {
+            $migration = require $adminMigration;
+            $migration->up();
+        }
 
-        $migration = require __DIR__ .
-            '/../database/migrations/2025_07_04_113000_create_addresses_table.php';
-        $migration->up();
+        $addressesMigration = glob(__DIR__ . '/../database/migrations/*_create_addresses_table.php')[0] ?? null;
+        if ($addressesMigration) {
+            $migration = require $addressesMigration;
+            $migration->up();
+        }
 
         // Seed only a minimal set of countries and administrative areas used by tests
         $countries = [
@@ -79,7 +85,7 @@ abstract class TestCase extends OrchestraTestCase
             DB::table('countries')->updateOrInsert(
                 ['code' => $c['code']],
                 [
-                    'uuid' => (string) Str::uuid(),
+                    'uuid' => (string) Str::orderedUuid(),
                     'name' => $c['name'],
                     'code' => $c['code'],
                     'created_at' => now(),
@@ -99,7 +105,7 @@ abstract class TestCase extends OrchestraTestCase
                 DB::table('administrative_areas')->updateOrInsert(
                     ['country_id' => $country->id, 'code' => $area['code']],
                     [
-                        'uuid' => (string) Str::uuid(),
+                    'uuid' => (string) Str::orderedUuid(),
                         'country_id' => $country->id,
                         'name' => $area['name'],
                         'code' => $area['code'],

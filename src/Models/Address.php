@@ -61,7 +61,7 @@ class Address extends Model
 
         static::creating(function (Address $address) {
             if (empty($address->uuid)) {
-                $address->uuid = (string) Str::uuid();
+                $address->uuid = (string) Str::orderedUuid();
             }
         });
     }

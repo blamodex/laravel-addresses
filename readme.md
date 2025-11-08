@@ -8,7 +8,7 @@ A lightweight Laravel package to manage postal addresses, countries and administ
 
 - Polymorphic `Address` model attachable to any Eloquent model via a trait
 - Lookup tables for `Country` and `AdministrativeArea` with seeders and migrations
-- Postal code normalization for common countries (`PostalCodeFormatter`) with a clear, nullable contract
+- Postal code normalization for US and Canada via (`PostalCodeFormatter`) with a clear, nullable contract
 - DB-backed `AddressValidator` to validate country, administrative area and postal codes
 - Service layer (`AddressService`) for create/update/delete/list operations
 - Soft deletes, UUID generation, and test coverage via Orchestra Testbench

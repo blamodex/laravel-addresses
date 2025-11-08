@@ -37,7 +37,7 @@ class AdministrativeArea extends Model
     {
         static::creating(function ($model) {
             if (empty($model->uuid)) {
-                $model->uuid = Str::uuid()->toString();
+                $model->uuid = Str::orderedUuid()->toString();
             }
         });
     }

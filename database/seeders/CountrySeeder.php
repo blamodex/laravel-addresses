@@ -214,7 +214,7 @@ class CountrySeeder extends Seeder
         $now = now();
 
         foreach ($countries as &$country) {
-            $country['uuid'] = Str::uuid()->toString();
+            $country['uuid'] = Str::orderedUuid()->toString();
             $country['created_at'] = $now;
             $country['updated_at'] = $now;
         }
