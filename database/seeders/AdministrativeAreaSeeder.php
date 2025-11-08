@@ -309,8 +309,8 @@ class AdministrativeAreaSeeder extends Seeder
             foreach ($administrativeAreas as $area) {
                 $country_id = $countryIds[$area['code']] ?? null;
                 if ($country_id) {
-                    $rows[] = [
-                        'uuid' => Str::uuid()->toString(),
+            $rows[] = [
+                'uuid' => Str::orderedUuid()->toString(),
                         'country_id' => $country_id,
                         'name' => $area['administrative_area'],
                         'code' => $area['administrative_area_code'],
