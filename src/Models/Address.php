@@ -20,14 +20,14 @@ use Illuminate\Support\Str;
  * @property string $address_1
  * @property string|null $address_2
  * @property string $city
- * @property string $subnation
  * @property string $postal_code
- * @property string $country
  * @property int $administrative_area_id
  * @property int $country_id
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read Country|null $country
+ * @property-read AdministrativeArea|null $administrativeArea
  */
 class Address extends Model
 {
