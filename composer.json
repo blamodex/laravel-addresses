@@ -1,5 +1,5 @@
 {
-    "name": "blamodex/laravel-address",
+    "name": "blamodex/laravel-addresses",
     "description": "Address management package for Laravel applications.",
     "type": "library",
     "license": "MIT",
