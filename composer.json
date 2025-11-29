@@ -2,7 +2,21 @@
     "name": "blamodex/laravel-addresses",
     "description": "Address management package for Laravel applications.",
     "type": "library",
+    "keywords": [
+        "laravel",
+        "address",
+        "addresses",
+        "postal",
+        "country",
+        "location",
+        "geocoding"
+    ],
     "license": "MIT",
+    "homepage": "https://github.com/blamodex/laravel-addresses",
+    "support": {
+        "issues": "https://github.com/blamodex/laravel-addresses/issues",
+        "source": "https://github.com/blamodex/laravel-addresses"
+    },
     "autoload": {
         "psr-4": {
             "Blamodex\\Address\\": "src/",
@@ -16,7 +30,6 @@
             "email": "admin@joelblodgett.ca"
         }
     ],
-    "minimum-stability": "dev",
     "require": {
         "php": "^8.2",
         "illuminate/support": "^12.0",
@@ -29,7 +42,8 @@
         "orchestra/testbench": "^10.0",
         "squizlabs/php_codesniffer": "4.x-dev",
         "phpunit/php-code-coverage": "*",
-        "larastan/larastan": "^3.0"
+        "larastan/larastan": "^3.0",
+        "blamodex/laravel-ai-agents": "^1.0"
     },
     "scripts": {
         "test": "phpunit",
@@ -44,5 +58,7 @@
                 "Blamodex\\Address\\AddressServiceProvider"
             ]
         }
-    }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
 }

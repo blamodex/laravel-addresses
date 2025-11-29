@@ -1,6 +1,22 @@
 # Blamodex Laravel Addresses
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Laravel](https://img.shields.io/badge/Laravel-12-red.svg)](https://laravel.com)
+[![PHP](https://img.shields.io/badge/PHP-8.2%2B-blue.svg)](https://www.php.net/)
+[![Tests](https://img.shields.io/badge/Tests-57%20passing-brightgreen.svg)](https://github.com/blamodex/laravel-addresses)
+
 A lightweight Laravel package to manage postal addresses, countries and administrative areas, suitable for attaching addresses to any Eloquent model using polymorphic relationships.
+
+## 📋 Table of Contents
+
+- [Features](#-features)
+- [Installation](#-installation)
+- [Configuration](#️-configuration)
+- [Usage](#-usage)
+- [Testing](#-testing)
+- [Project Structure](#-project-structure)
+- [Contributing](#-contributing)
+- [License](#-license)
 
 ---
 
@@ -190,3 +206,12 @@ tests/
 ## 📄 License
 
 MIT © [Blamodex](https://github.com/blackmage-codex)
+## 🤝 Contributing
+
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+
+## 🔗 Links
+
+- [Report a Bug](https://github.com/blamodex/laravel-addresses/issues)
+- [Request a Feature](https://github.com/blamodex/laravel-addresses/issues)
+- [View Changelog](CHANGELOG.md)
